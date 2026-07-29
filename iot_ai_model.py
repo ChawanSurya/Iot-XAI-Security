@@ -50,6 +50,16 @@ print("Status: Training Industrial XGBoost Model...")
 model = xgb.XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1)
 model.fit(X_train, y_train)
 
+# --- METRICS (for resume + documentation) ---
+from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
+
+y_pred  = model.predict(X_test)
+y_prob  = model.predict_proba(X_test)[:, 1]
+
+print(f"Accuracy : {accuracy_score(y_test, y_pred) * 100:.2f}%")
+print(f"ROC-AUC  : {roc_auc_score(y_test, y_prob):.4f}")
+print(classification_report(y_test, y_pred, target_names=["Benign", "Malicious"]))
+
 # --- 2. THE XAI: LOGIC VISUALIZATION ---
 print("Status: Generating SHAP Explainability Plot...")
 explainer = shap.TreeExplainer(model)
